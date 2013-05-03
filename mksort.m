@@ -19,7 +19,7 @@ function varargout = mksort(varargin)
 % 
 % Distribution and contributions by Ripple LLC
 % 
-% TODO: Comment reflecting info needed to find bugtracking info for github.
+% Report bugs to https://github.com/ripple-neuro/mksort/issues
 % 
 % This program is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the
