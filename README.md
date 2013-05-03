@@ -18,9 +18,7 @@ One Bungtown Road
 Cold Spring Harbor, NY 11724
 
 Distribution and contributions by Ripple LLC
- 
-TODO: Comment reflecting info needed to find bugtracking info for github.
- 
+  
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; version 2 of the License.
