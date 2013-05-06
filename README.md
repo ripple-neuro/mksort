@@ -10,11 +10,8 @@ functional tuning of the sorted units.
 
 Copyright (C) 2010, 2011, 2012, 2013 The Board of Trustees of The Leland
 Stanford Junior University
- 
-Written by Matt Kaufman
-antimatt+ss AT gmail DOT com
-One Bungtown Road
-Cold Spring Harbor, NY 11724
+
+Written by Matt Kaufman (One Bungtown Road, Cold Spring Harbor, NY 11724)
 
 Distribution and contributions by Ripple LLC.
 
