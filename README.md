@@ -17,8 +17,8 @@ Distribution and contributions by Ripple LLC.
 
 Downloading
 ===========
-MKsort may be downloaded using a Subversion, Git client, or as a zip archive.
-Instructions may be found at MKsort main page on Github at 
+MKsort may be downloaded using a Subversion or Git client or as a zip archive.
+Details may be found at the main MKsort page on GitHub at 
 https://github.com/ripple-neuro/mksort.  The full zip archive of MKsort may be
 found at https://github.com/ripple-neuro/mksort/archive/master.zip.
 
