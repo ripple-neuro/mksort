@@ -17,8 +17,12 @@ antimatt+ss AT gmail DOT com
 One Bungtown Road
 Cold Spring Harbor, NY 11724
 
-Distribution and contributions by Ripple LLC
-  
+Distribution and contributions by Ripple LLC.
+
+To report bugs or request features please use the GitHub issues section for
+MKsort, found at this link: https://github.com/ripple-neuro/mksort/issues.  
+Alternatively, you may contact Ripple at support@rppl.com.
+
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; version 2 of the License.
