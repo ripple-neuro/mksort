@@ -1,6 +1,5 @@
 MKsort
 ======
-
 It's a heck of a spikesorter.
 
 This software, MKsort, allows users to import electrophysiology data and 
@@ -19,10 +18,22 @@ Cold Spring Harbor, NY 11724
 
 Distribution and contributions by Ripple LLC.
 
-To report bugs or request features please use the GitHub issues section for
-MKsort, found at this link: https://github.com/ripple-neuro/mksort/issues.  
-Alternatively, you may contact Ripple at support@rppl.com.
+Downloading
+===========
+MKsort may be downloaded using a Subversion, Git client, or as a zip archive.
+Instructions may be found at MKsort main page on Github at 
+https://github.com/ripple-neuro/mksort.  The full zip archive of MKsort may be
+found at https://github.com/ripple-neuro/mksort/archive/master.zip.
 
+Support
+=======
+To report bugs or request features please use the GitHub issues section for
+MKsort, found at this link: https://github.com/ripple-neuro/mksort/issues.  Alternatively, 
+you may contact Ripple at support@rppl.com.
+
+
+Licensing
+=========
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; version 2 of the License.
