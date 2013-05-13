@@ -454,7 +454,7 @@ function [thresh, threshi] = findThreshold(waves)
 % number of pre-threshold samples between version 4 and 6 of the
 % software/firmware (and possibly introduced another weird offset).
 
-% [ELB] - This only returns the negative threshold.  There may be different
+% Note - This only returns the negative threshold.  There may be different
 % negative and positive thresholds
 
 % The hack we'll use to find the threshold-crossing sample is to find the

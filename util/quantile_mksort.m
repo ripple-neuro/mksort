@@ -20,21 +20,26 @@ function q = quantile_mksort(x, p, d)
 if any(p < 0) || any(p > 1.0) || ~isreal(p)
   error('probabilities must be between 0 and 1');
 end
-xdim = size(x);
+xsize = size(x);
+
 % if dimension is not specified use the first nonsingleton.
 if nargin < 3
-  d = find(xdim ~= 1, 1);
+  d = find(xsize ~= 1, 1);
   % in case x is scalar
   if isempty(d)
     d = 1;
   end
 end
 n = size(x, d);
-x = sort(x, d);
+% reshape the data so that the first nonsingleton dimension is first
+ncols = numel(x) / n;
+x = reshape(x, n, ncols);
+% sort based off this first dimension
+x = sort(x, 1);
 % total possible number of quantiles for this data including 0 and 1
 bins = [0 (0.5:(n-0.5))./n 1]'; 
 % pad x by doubling the first and last entries so that it has the same number 
 % of elements as bins
-xp = [x(1,:); x; x(n,:)];
+xp = [x(1,:); x(1:n,:); x(n,:)];
 % interpolate between the quanitle bins for the requested quantiles
 q = interp1q(bins, xp, p(:));
