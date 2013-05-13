@@ -170,8 +170,10 @@ for arr = 1:length(nsxNames)
       
       % In the case of Ripple files, remove any analog channels.  I.e.,
       % channels aboved 10241.  With Grapevine, is no neural data with
-      % channel counts about 512.
-      if strfind(NSX.Comment, 'Trellis')
+      % channel counts about 512.  
+      % Check for the comment field effectively handles NSX2.1
+      % compatiblity.
+      if isfield(NSX, 'Comment') && strfind(NSX.Comment, 'Trellis')
         if any(channelGroups{g} > 512)
           continue;
         end
@@ -204,7 +206,8 @@ for arr = 1:length(nsxNames)
         % TODO: Some memory benifit could be had by leaving this as an
         % integer for the thresholding and only converting the thresholded
         % spikes to double.
-        data{e} = double(data{e}) * adc2uV;
+        data{e} = double(data{e}) * double(adc2uV);
+        % data{e} = data{e} * adc2uV;
         
         %% Filter
         data{e} = round(sosfilt(filt.SOS, data{e}));
