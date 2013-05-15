@@ -47,7 +47,7 @@ function varargout = mksort(varargin)
 %
 %      mksort('Property','Value',...) creates a new mksort or raises the
 %      existing singleton.  Starting from the left, property value pairs are
-%      applied to the GUI before spikesorter_OpeningFunction gets called.  An
+%      applied to the GUI before mksort_OpeningFunction gets called.  An
 %      unrecognized property name or invalid value makes property application
 %      stop.  All inputs are passed to mksort_OpeningFcn via varargin.
 %
@@ -386,7 +386,7 @@ if isempty(varargin)
   for tif = 1:length(handles.trialInfoFcns)
     handles.(['mnu' tifs{tif}.fcn]) = uimenu(handles.mnuTrialInfoOptions, ...
       'Tag', ['mnu' tifs{tif}.fcn], 'Label', tifs{tif}.label, ...
-      'Callback', 'spikesorter(''fixChecks'',gcbo,[],guidata(gcbo))');
+      'Callback', 'mksort(''fixChecks'',gcbo,[],guidata(gcbo))');
   end
 
   % Select default data extraction option
@@ -402,7 +402,7 @@ if isempty(varargin)
   for smf = 1:length(handles.mergeSortsIntoDataFcns)
     handles.(['mnu' smfs{smf}.fcn]) = uimenu(handles.mnuSortMergeOptions, ...
       'Tag', ['mnu' smfs{smf}.fcn], 'Label', smfs{smf}.label, ...
-      'Callback', 'spikesorter(''fixChecks'',gcbo,[],guidata(gcbo))');
+      'Callback', 'mksort(''fixChecks'',gcbo,[],guidata(gcbo))');
   end
 
   % Select default data extraction option
