@@ -19,7 +19,8 @@ function varargout = mksort(varargin)
 % 
 % Distribution and contributions by Ripple LLC
 % 
-% Report bugs to https://github.com/ripple-neuro/mksort/issues
+% Report bugs to https://github.com/ripple-neuro/mksort/issues or send email
+% to support@rppl.com.
 % 
 % This program is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the
@@ -286,7 +287,7 @@ end
 % tab gets added... multiple times.
 % Ensure valid prefs
 if ~isfield(handles, 'defaultDataDir') || ~ischar(handles.defaultDataDir)
-  handles.defaultDataDir = '/data/Nitschke/MATstructs/SS';
+  handles.defaultDataDir = '/data/SS';
 end
 if ~isfield(handles, 'trialInfoFcns') || ~iscell(handles.trialInfoFcns) || ~isfield(handles.trialInfoFcns{end}, 'label') || ~isfield(handles.trialInfoFcns{end}, 'fcn')
   fprintf('Using defaults for trialInfoFcns\n');
