@@ -200,6 +200,11 @@ for arr = 1:length(nevNames)
       % Values corresponding to this data chunk
       indices = firstSpike:firstSpike+nWavesRead-1;
       electrodeNums = allElectrodeNums(indices);
+%      electrodesInChunk = unique(electrodeNums);
+      % current Ripple data may contain spike markers which are delivered
+      % in NEV packets but with an electrode ID of 5120 + the electrode ID.
+      % Here we require that electrode IDs are less than 512.
+      electrodeNums = electrodeNums(electrodeNums <= 512);
       electrodesInChunk = unique(electrodeNums);
       unitNums = allUnits(indices);
       chunkSpikeTimes = spikeTimes(indices);
@@ -224,7 +229,7 @@ for arr = 1:length(nevNames)
         
         allChunkFileInfo{arr, electrode}(end+1, :) = [fileNum, chunki]; %#ok<AGROW>
         
-        
+         
         %% Create waveforms data structure for this chunk
         if length(nevNames) == 1
           array = NaN;

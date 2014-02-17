@@ -283,8 +283,11 @@ NEVarrayHeader.mapfile = blanks(24);
 
 %%	Read Extended Headers
 maximumChannelNumberObserved = 0;
+% Produce warnings if stim markers are found, but will produce warning on
+% the first stim marker found
+foundStimMarkers = 0;
 for n=1:NEVbasicHeader.NumHeaders;
-    if( ftell( fid ) ~= basicHeaderPacketSize + (n-1)*extentedHeaderPacketSize )
+    if( ftell( fid ) ~= basicHeaderPacketSize + (n-1) * extentedHeaderPacketSize )
         warning( 'NEVGetHeaders:badFilePosition', ...
             'Invalid file positioning\n' );
         return
@@ -299,10 +302,20 @@ for n=1:NEVbasicHeader.NumHeaders;
             
             ncountTest = 1;[ id, ncount ] = fread( fid, [1,ncountTest], 'uint16' );
             if( ncount ~= ncountTest );warning( 'NEVGetHeaders:readCountError', 'Unable to read correct number of elements' );return;end
-            if( ( id < 1 ) || ( id > maximumChannelNumber ) )
+            if(  id < 1 )
                 warning( 'NEVGetHeaders:badChannelID', ...
-                    'Invalid packet ID value (%f) found\n', id );
-                return
+                    'Invalid packet ID value (%d) found\n', id );
+                % skip to the next NEV header
+                fseek(fid, basicHeaderPacketSize + n * extentedHeaderPacketSize, 'bof');
+                continue;
+            elseif ( id > maximumChannelNumber )
+                if ( ~foundStimMarkers )
+                    warning( 'NEVGetHeaders:stimMarkersFound', 'Stim markers found');
+                    % skip to the next NEV header
+                    fseek(fid, basicHeaderPacketSize + n * extentedHeaderPacketSize, 'bof');
+                    foundStimMarkers = 1;
+                    continue;
+                end
             end
             maximumChannelNumberObserved = ...
                 max( maximumChannelNumberObserved, id );
