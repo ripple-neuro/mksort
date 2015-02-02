@@ -17,7 +17,14 @@ function setupAxesForFastDraw(ha)
 % 
 % Please see mksort.m for full license and contact details.
 
-set(ha, 'DrawMode', 'fast');
+% [ELB-2015/02/02] 'DrawMode' 'fast' is deprecated in 2014 and 'SortMode'
+% is now recommended.  On my machine, I don't see any difference between
+% 'DrawMode' 'fast' or changes in 'SortMode' property.  If this begins to
+% cause trouble, a user could try to use 'SortMode' to 'depth' or submit an
+% issue.
+% set(ha, 'DrawMode', 'fast');
+% set(ha, 'SortMode', 'depth');
+
 % According to the original documentation for doc_perfex:
 % Do not set CameraViewAngleMode, DataAspectRatioMode,
 % and PlotBoxAspectRatioMode to avoid exposing a bug

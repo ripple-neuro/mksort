@@ -28,12 +28,12 @@ function varargout = mksort(varargin)
 % 
 % This program is distributed in the hope that it will be useful, but
 % WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.ï¿½See the GNU General
 % Public License for more details.
 % 
 % You should have received a copy of the GNU General Public License along
 % with this program; if not, write to the Free Software Foundation, Inc.,
-% 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+% 51 Franklin Street, Fifth Floor, Boston, MAï¿½ 02110-1301, USA.
 
 % GUIDE help immediately below
 % mksort M-mnufile for mksort.fig
@@ -1509,7 +1509,8 @@ handles.previews = previews;
 function handles = selectChannel(handles, channel)
 % Select this channel: update internal data, move selection rectangle
 handles.selectedCh = channel;
-if isnan(handles.selectionRectH)
+% if isa(handles.selectionRectH, 'matlab.graphics.primitive.Rectangle')
+if ~ishandle(handles.selectionRectH)
   handles.selectionRectH = rectangle('EdgeColor', 'g', 'LineWidth', 1);
   guidata(handles.axMulti, handles);  % Here in case of errors, to prevent multiple rectangles
 end
