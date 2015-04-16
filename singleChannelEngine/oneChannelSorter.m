@@ -2255,7 +2255,7 @@ switch option
     % Abs or the plot looks backwards
     depths = abs(min(handles.waveforms.alignedWaves));
     [vals, bins] = hist(depths, handles.troughDepthNBins);
-    bh = bar(bins, vals);
+    bh = bar(hObject, bins, vals);
     set(bh, 'EdgeColor', [0.2 0.2 0.2], 'FaceColor', [0.2 0.2 0.2], 'BarWidth', 1);
     axis tight;
     axLim = axis;
@@ -2266,7 +2266,7 @@ switch option
     % Peak heights
     peaks = max(handles.waveforms.alignedWaves);
     [vals, bins] = hist(peaks, handles.troughDepthNBins);
-    bh = bar(bins, vals);
+    bh = bar(hObject, bins, vals);
     set(bh, 'EdgeColor', [0.2 0.2 0.2], 'FaceColor', [0.2 0.2 0.2], 'BarWidth', 1);
     axis tight;
     axLim = axis;
