@@ -22,17 +22,15 @@ refracMax = 2;
 autocorr.lags = 0.5:maxLag-0.5;
 autocorr.lockout = lockout;
 
-
 if isempty(spikeTimes)
   autocorr.values = zeros(1, length(autocorr.lags));
   autocorr.percRefractoryViolations = NaN;
+  sprintf('going to return in ISI. . .\n')
   return;
 end
 
 ISIs = diff(spikeTimes);
-
 ISIs = ISIs(ISIs <= maxLag & ISIs >= 0);
-
 autocorr.values = hist(ISIs, autocorr.lags, maxLag);
 
 % Calculate refractory violations. We'll use the mean count per bin after

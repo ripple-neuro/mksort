@@ -1,4 +1,4 @@
-function plotAutocorrsInAxes(autocorrs, nAutocorrs, nUnits, has, color, redRefracViolThresh)
+function plotAutocorrsInAxes(autocorrs, nAutocorrs, nUnits, axISIHs, color, redRefracViolThresh)
 % Plots autocorrelation/ISI plots in specified axes. nUnits is the maximum
 % number of possible units, has is a vector of handles to the axis objects,
 % color is a (nUnits x 3) matrix specifying the colors for each unit
@@ -13,9 +13,19 @@ function plotAutocorrsInAxes(autocorrs, nAutocorrs, nUnits, has, color, redRefra
 % Written by Matt Kaufman
 % 
 % Please see mksort.m for full license and contact details.
+% autocorrs
+% nAutocorrs
+% nUnits
+% axISIHs
+% color
+% redRefracViolThresh
+%sprintf('in plotAutocorrsInAxes\n')
+%sprintf('nUnits = %d\n',nUnits)
 
+% (IJM) 'has' was used as the variable now called 'axISIHs'. has() is a matlab 
+% function, so I change var name for readability
 for u = 1:nUnits
-  activateAxes(gcbf, has(u));
+  activateAxes(gcbf, axISIHs(u));
   hold on;
   cla;
   
@@ -48,6 +58,7 @@ for u = 1:nUnits
     % ISIs. We know which it is because autocorrs have 11 points for 10 ms
     % while ISIs have 10.
     if length(autocorrs(u).lags) == 11
+      sprintf('here\n')
       plot(autocorrs(u).lags, autocorrs(u).values, 'color', color(u,:), 'LineWidth', 1.5);
     else
       bh = bar(autocorrs(u).lags, autocorrs(u).values);

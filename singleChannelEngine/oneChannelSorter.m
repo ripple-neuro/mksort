@@ -133,7 +133,7 @@ end
 
 % If this is the first open, resize this using the window size.  Otherwise,
 % don't touch.
-% TODO: Make width and height  true parameters and allow for this to be user 
+% TODO: Make width and height true parameters and allow for this to be user 
 % configurable
 if ~isfield(handles, 'isopen')
   screenSize = get(0, 'ScreenSize');
@@ -584,11 +584,25 @@ end
 
 % When switching between Waveform and PCA view, adjust number of points
 % displayed
+% IJM: Originally the code in 'else' were the only code present
+% in each case. Added defNWaves and if,else to handle the situation where
+% the computed value is greater than the number of waves present. 
+nWaves = size(handles.waveforms.waves, 2);
 switch handles.sortMethods{handles.sortMethod}.view
   case 'PCA'
-    set(handles.txtNWaves, 'String', num2str(handles.defaultNWaves * handles.PCADispMult));
+    defNWaves = handles.defaultNWaves * handles.PCADispMult;
+    if defNWaves > nWaves
+        set(handles.txtNWaves, 'String', num2str(nWaves));
+    else
+        set(handles.txtNWaves, 'String', num2str(defNWaves));
+    end
   otherwise
-    set(handles.txtNWaves, 'String', num2str(handles.defaultNWaves));
+    defNWaves = handles.defaultNWaves;
+    if defNWaves > nWaves
+        set(handles.txtNWaves, 'String', num2str(nWaves));
+    else
+        set(handles.txtNWaves, 'String', num2str(defNWaves));
+    end
 end
 
 % Will prevent displayWaveforms from updating the display. This is useful
@@ -629,10 +643,13 @@ handles.sortEpochRectHs = rectangle('Position', [1 0 handles.sorts.epochEnd 1], 
 % Set up time slider
 nWaves = size(handles.waveforms.waves, 2);
 nWavesShown = str2double(get(handles.txtNWaves, 'String'));
-set(handles.sldTime, 'Max', nWaves - nWavesShown + 1);
+set(handles.sldTime, 'Max', nWavesShown-1);
+%set(handles.sldTime, 'Max', nWaves - nWavesShown + 1);
 set(handles.sldTime, 'Value', 1);
 set(handles.sldTime, 'Min', 1);
-set(handles.sldTime, 'SliderStep', [min(nWavesShown/nWaves, 1), 0.1]);
+% IJM: Changed from min("", 1) below. Caused broken slider when 
+% nWavesShown/nWaves > 0.1.
+set(handles.sldTime, 'SliderStep', [min(nWavesShown/nWaves, 0.01), 0.1]);
 
 % Generate alignedWaves if they don't exist
 if size(handles.waveforms.alignedWaves, 2) ~= size(handles.waveforms.waves, 2)
@@ -689,10 +706,6 @@ set(hObject, 'CloseRequestFcn', @closeIfSaved);
 
 % UIWAIT makes oneChannelSorter wait for user response (see UIRESUME)
 % uiwait(handles.figOneChannelSorter);
-
-
-
-
 
 
 % --- Outputs from this function are returned to the command line.
@@ -875,14 +888,15 @@ function txtNWaves_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of txtNWaves as text
 %        str2double(get(hObject,'String')) returns contents of txtNWaves as a double
 % Number of waves/points to plot.
-
+%nWaves = size(handles.waveforms.waves, 2);
+nAlignWaves = size(handles.waveforms.alignedWaves, 2);
 val = str2double(get(hObject, 'String'));
 % Make sure we have a sane value
 if isnan(val) || val < 1
   set(hObject, 'String', '100');
   return;
 elseif val > size(handles.waveforms.alignedWaves, 2)
-  set(hObject, 'String', num2str(size(handles.waveforms.alignedWaves, 2)));
+  set(hObject, 'String', num2str(nAlignWaves));
 end
 nWavesShown = str2double(get(handles.txtNWaves, 'String'));
 % Time slider max (have to ensure we're not beyond the new end first)
@@ -968,11 +982,15 @@ displayWaveforms(handles);
 % --- Executes on button press in btnNWavesMore.
 function btnNWavesMore_Callback(hObject, eventdata, handles)
 val = str2double(get(handles.txtNWaves, 'String'));
+nAlignWaves = size(handles.waveforms.alignedWaves, 2);
 nWavesShown = num2str(floor(val * 3/2));
+if floor(val * 3/2) > nAlignWaves
+    nWavesShown = num2str(nAlignWaves);
+end
 set(handles.txtNWaves, 'String', nWavesShown);
 nWavesShown = str2double(get(handles.txtNWaves, 'String'));
 % Time slider max (have to ensure we're not beyond the new end first)
-maxTime = size(handles.waveforms.alignedWaves, 2) - nWavesShown + 1;
+maxTime = nAlignWaves - nWavesShown + 1;
 if get(handles.sldTime, 'Value') > maxTime
   set(handles.sldTime, 'Value', maxTime);
 end
@@ -985,11 +1003,15 @@ displayWaveforms(handles);
 % --- Executes on button press in btnNWavesLess.
 function btnNWavesLess_Callback(hObject, eventdata, handles)
 val = str2double(get(handles.txtNWaves, 'String'));
+nAlignWaves = size(handles.waveforms.alignedWaves, 2);
 nWavesShown = num2str(ceil(val * 2/3));
+if ceil(val * 2/3) < 1
+    nWavesShown = num2str(1);
+end
 set(handles.txtNWaves, 'String', nWavesShown);
 nWavesShown = str2double(get(handles.txtNWaves, 'String'));
 % Time slider max (have to ensure we're not beyond the new end first)
-maxTime = size(handles.waveforms.alignedWaves, 2) - nWavesShown + 1;
+maxTime = nAlignWaves - nWavesShown + 1;
 if get(handles.sldTime, 'Value') > maxTime
   set(handles.sldTime, 'Value', maxTime);
 end
@@ -1343,7 +1365,10 @@ function btnNewReqHoop_Callback(hObject, eventdata, handles)
 activateAxes(gcbf, handles.axWaves);
 xLims = get(gca, 'XLim');
 yLims = get(gca, 'YLim');
-r = [range(xLims) range(yLims)]; % Range
+% IJM: Removed range function call, see two lines below. 
+% In 2015b range is now part of special toolboxes
+r = [max(xLims(:))-min(xLims(:)) max(yLims(:))-min(yLims(:))];
+%r = [range(xLims) range(yLims)]; % Range
 ym = 0.1;                        % y range multiplier for initial size
 
 x = round(mean(xLims));
@@ -1364,7 +1389,9 @@ sortNewHoop(hoopHandle);
 function btnDeleteHoop_Callback(hObject, eventdata, handles)
 thisHoop = handles.activeSortObj;
 
-if isnan(thisHoop), return; end;
+% IJM: Starting in R2014b, graphics are no longer of type double. Validity
+% testing is done differently.
+if not(isgraphics(thisHoop)), return; end;
 
 epochs = epochsToAffect(handles);
 epochs(epochs == handles.activeEpoch) = [];  % We'll deal with the active epoch specially, to make absolutely sure things work
@@ -1534,7 +1561,9 @@ sortNewHoop(ellipseHandle);
 function btnDeleteEllipse_Callback(hObject, eventdata, handles)
 thisEllipse = handles.activeSortObj;
 
-if isnan(thisEllipse), return; end;
+% IJM: Starting in R2014b, graphics are no longer of type double. Validity
+% testing is done differently.
+if not(isgraphics(thisEllipse)), return; end;
 
 epochs = epochsToAffect(handles);
 epochs(epochs == handles.activeEpoch) = [];  % We'll deal with the active epoch specially, to make absolutely sure things work
@@ -2243,20 +2272,21 @@ function displayTroughDepths(handles)
 % This function implements the little plot in the upper-right corner. It
 % can either display a histogram of trough depths, histogram of trough
 % peaks, or the firing rates of each unit over time.
-
 hObject = handles.axTroughDepthHist;
 option = get(handles.cmbTroughDepthHist, 'Value');
 activateAxes(gcbf, hObject);
 cla;
-
 switch option
   case 1
     % Trough depths
     % Abs or the plot looks backwards
     depths = abs(min(handles.waveforms.alignedWaves));
     [vals, bins] = hist(depths, handles.troughDepthNBins);
-    bh = bar(hObject, bins, vals);
+    bh = bar(gca, bins, vals);
+    % IJM: set() is deprecated in 2015[a|b], use bh.EdgeColor([a b c]), etc.
+    % Though I will currently leave it because it works for now. 
     set(bh, 'EdgeColor', [0.2 0.2 0.2], 'FaceColor', [0.2 0.2 0.2], 'BarWidth', 1);
+    set(bh, 'EdgeColor', 'k', 'FaceColor',  'k', 'BarWidth', 0.8);
     axis tight;
     axLim = axis;
     axLim(4) = axLim(4) * 1.2;  % Set nice limits
@@ -2281,6 +2311,7 @@ switch option
     end
 end
 guidata(handles.axWaves, handles);
+
 
 
 
@@ -2318,7 +2349,10 @@ function [handles, hh] = newReqHoop(handles, x, yMin, yMax, epochs, rebuild)
 activateAxes(gcbf, handles.axWaves);
 xLims = get(gca, 'XLim');
 yLims = get(gca, 'YLim');
-r = [range(xLims) range(yLims)]; % axis range, for positioning and sizing the new hoop
+% IJM: Removed range function call, see two lines below. 
+% In 2015b range is now part of special toolboxes
+r = [max(xLims(:))-min(xLims(:)) max(yLims(:))-min(yLims(:))];
+%r = [range(xLims) range(yLims)]; % axis range, for positioning and sizing the new hoop
 xm = 0.015;                      % x range multiplier for display
 
 % Build the new hoop with an I-beam shape. Draws vertical part
@@ -2422,6 +2456,7 @@ handles = guidata(handles.axWaves);
 function handles = markSortChanged(handles)
 % Save that channel is not fully sorted, obliterate validity of online
 % sorting, clear autocorrs, clear FR over day if relevant
+%sprintf('in markSortChanged\n')
 handles.sortInfo.fullySorted = 0;
 handles.sortInfo.onlineSorted = 0;
 handles.sortInfo.userSorted = 1;
@@ -2441,7 +2476,6 @@ function showFROverDay(handles)
 % Show firing rate over day in little plot in upper right. Should only be
 % called when needed.
 % This function is written for speed.
-
 % # of pts to show
 totalPts = 100;
 
@@ -2848,6 +2882,7 @@ end
 function handles = displayMainPlot(handles, view, startPt, endPt)
 activateAxes(gcbf, handles.axWaves);
 children = get(gca, 'Children');
+
 % Don't delete the sortObjects
 children = children(~ismember(children, handles.sortObjects));
 for c = children
@@ -3004,7 +3039,6 @@ end
 
 function handles = plotAutocorrs(handles)
 nAutocorrs = length(handles.sortInfo.autocorrs);
-
 if ~handles.sortInfo.fullySorted
   for u = 1:handles.maxUnits
     handles.sortInfo.autocorrs(u).values = [];
@@ -3246,8 +3280,10 @@ set(h, 'XData', x);
 y = get(h, 'YData');
 xLims = get(gca, 'XLim');
 yLims = get(gca, 'YLim');
-width = handles.dragHandleSize * range(xLims);
-height = handles.dragHandleSize * range(yLims);
+% IJM: Removed range function call in two lines below. Range is part of 
+% a toolbox in 2015b.
+width = handles.dragHandleSize * (max(xLims(:))-min(xLims(:)));
+height = handles.dragHandleSize * (max(yLims(:))-min(yLims(:)));
 
 % Find epochs to affect
 epochs = epochsToAffect(handles);
@@ -3421,9 +3457,13 @@ for epoch = epochs
   end
 end
 
+% IJM: Removed range function call in two lines below. Range is part of 
+% a toolbox in 2015b.
+% width = handles.dragHandleSize * range(xLims);
+% height = handles.dragHandleSize * range(yLims);
+width = handles.dragHandleSize * (max(xLims(:))-min(xLims(:)));
+height = handles.dragHandleSize * (max(yLims(:))-min(yLims(:)));
 
-width = handles.dragHandleSize * range(xLims);
-height = handles.dragHandleSize * range(yLims);
 
 % If this is a newly-active ellipse, make draggable handles
 % Destroy old handles if applicable
@@ -3739,6 +3779,9 @@ for u = uniqueUnits
   
   spikeTimes = handles.waveforms.spikeTimes(consecutiveUnits == u);
   %   autocorr = autocorrSpikesOneMS(spikeTimes, 10, handles.sortInfo.autocorrs(u).lockout);
+%   TODO: maxlag should be a variable that can be changed by the user,
+%   originally equal to 10, changed here to get example data to plot
+%   correctly --- IJM
   autocorr = ISIOneMS(spikeTimes, 10, handles.sortInfo.autocorrs(u).lockout);
   handles.sortInfo.autocorrs(u) = autocorr;
 end

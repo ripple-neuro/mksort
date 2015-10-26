@@ -1606,6 +1606,12 @@ if anyUnits
       ratingXOffset = ratingXOffset + 0.2;
     end
   end
+  % IJM: In previous versions of Matlab, no axes labels were displayed on the
+  % spike envelope plot (main MKSort window, upper-right plot) so I
+  % inserted the call below to remove them in newer version of Matlab.
+  % TODO: In older versions, the envelopes were filled with color, now only
+  % the outline persists, figure this out at some point. 
+  set(gca,'XTickLabel','','YTickLabel','');
 end
 
 
